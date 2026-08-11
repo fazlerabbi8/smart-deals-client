@@ -5,6 +5,7 @@ import auth from "../firebase/firebase.init";
 
 
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext(null);
 
 const googleProvider = new GoogleAuthProvider()

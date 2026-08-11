@@ -1,13 +1,12 @@
-
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
-import { useContext } from "react";
-
+import { useContext, useState } from "react";
 
 const Register = () => {
-
   const navigate = useNavigate();
-  const { createUser, setCurrentUser } = useContext(AuthContext);
+  const { createUser, setCurrentUser, googleLogin } = useContext(AuthContext);
+
+  const [Error, setError] = useState(null);
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -17,13 +16,63 @@ const Register = () => {
 
     createUser(email, password)
       .then((result) => {
-        console.log(result.user)
+        console.log(result.user);
+
+        const newUser = {
+          name: result.user.displayName,
+          email: result.user.email,
+          image: result.user.photoURL,
+        };
+
+        fetch("http://localhost:5000/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newUser),
+        })
+          .then((res) => res.json())
+          .then((data) => console.log(data))
+          .catch((err) => console.log(err));
+
         setCurrentUser(result.user);
         e.target.reset();
         navigate("/");
       })
       .catch((err) => console.log(err));
   };
+
+  const handleGoogleLogin = () => {
+    googleLogin()
+      .then((result) => {
+        console.log(result.user);
+
+        const newUser = {
+          name: result.user.displayName,
+          email: result.user.email,
+          image: result.user.photoURL,
+        };
+
+        fetch("http://localhost:5000/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newUser),
+        })
+          .then((res) => res.json())
+          .then((data) => console.log(data))
+          .catch((err) => console.log(err));
+
+        setCurrentUser(result.user);
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err.message);
+        setError(err);
+      });
+  };
+
   return (
     <div className="flex justify-center items-center mt-24">
       <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
@@ -32,18 +81,28 @@ const Register = () => {
             <fieldset className="fieldset">
               <label className="label">Email</label>
 
-              <input type="email" name="email" className="input" placeholder="Email" />
+              <input
+                type="email"
+                name="email"
+                className="input"
+                placeholder="Email"
+              />
 
               <label className="label">Password</label>
 
-              <input name="password" type="password" className="input" placeholder="Password" />
+              <input
+                name="password"
+                type="password"
+                className="input"
+                placeholder="Password"
+              />
 
               <button className="btn btn-neutral mt-4">Register</button>
             </fieldset>
           </form>
           <h2 className="text-xl font-semibold text-center mt-4 mb-3">OR</h2>
           {/* Google */}
-          <button className="btn bg-white text-black border-[#e5e5e5]">
+          <button  onClick={handleGoogleLogin} className="btn bg-white text-black border-[#e5e5e5]">
             <svg
               aria-label="Google logo"
               width="16"

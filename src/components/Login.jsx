@@ -1,8 +1,6 @@
 import { useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
-import auth from "../firebase/firebase.init";
-
 
 const Login = () => {
   const location = useLocation();
@@ -20,7 +18,7 @@ const Login = () => {
 
     signInUser(email, password)
       .then((result) => {
-        console.log(result.user)
+        console.log(result.user);
         setCurrentUser(result.user);
         e.target.reset();
         navigate(location?.state ? location.state : "/");
@@ -30,18 +28,36 @@ const Login = () => {
       });
   };
 
-  const handleGoogleLogin = () =>{
+  const handleGoogleLogin = () => {
     googleLogin()
-    .then(result => {
-      console.log(result.user);
-      setCurrentUser(result.user)
-      navigate("/");
-    })
-    .catch(err =>{
-      console.log(err.message);
-      setError(err);
-    })
-  }
+      .then((result) => {
+        console.log(result.user);
+
+        const newUser = {
+          name: result.user.displayName,
+          email: result.user.email,
+          image: result.user.photoURL,
+        };
+
+        fetch("http://localhost:5000/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newUser),
+        })
+          .then((res) => res.json())
+          .then((data) => console.log(data))
+          .catch((err) => console.log(err));
+
+        setCurrentUser(result.user);
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err.message);
+        setError(err);
+      });
+  };
 
   return (
     <div className="flex justify-center items-center mt-24">
@@ -76,7 +92,10 @@ const Login = () => {
           </form>
           <h2 className="text-xl font-semibold text-center mt-4 mb-3">OR</h2>
           {/* Google */}
-          <button onClick={handleGoogleLogin} className="btn bg-white text-black border-[#e5e5e5]">
+          <button
+            onClick={handleGoogleLogin}
+            className="btn bg-white text-black border-[#e5e5e5]"
+          >
             <svg
               aria-label="Google logo"
               width="16"
