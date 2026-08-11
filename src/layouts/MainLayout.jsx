@@ -1,4 +1,5 @@
 import { Outlet } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import Navbar from "../components/Navbar";
 
 const MainLayout = () => {
@@ -6,6 +7,7 @@ const MainLayout = () => {
     <div className="container mx-auto p-6">
       <Navbar></Navbar>
       <Outlet />
+      <Toaster position="top-center" />
     </div>
   );
 };

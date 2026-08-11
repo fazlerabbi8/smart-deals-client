@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
 import { useContext, useState } from "react";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -32,7 +33,13 @@ const Register = () => {
           body: JSON.stringify(newUser),
         })
           .then((res) => res.json())
-          .then((data) => console.log(data))
+          .then((data) => {
+            if (data.insertedId) {
+              toast.success("Registration successful!");
+            } else {
+              toast.error(data.message || "Something went wrong");
+            }
+          })
           .catch((err) => console.log(err));
 
         setCurrentUser(result.user);
@@ -61,7 +68,13 @@ const Register = () => {
           body: JSON.stringify(newUser),
         })
           .then((res) => res.json())
-          .then((data) => console.log(data))
+          .then((data) => {
+            if (data.insertedId) {
+              toast.success("Registration successful!");
+            } else {
+              toast.error(data.message || "Something went wrong");
+            }
+          })
           .catch((err) => console.log(err));
 
         setCurrentUser(result.user);
@@ -102,7 +115,10 @@ const Register = () => {
           </form>
           <h2 className="text-xl font-semibold text-center mt-4 mb-3">OR</h2>
           {/* Google */}
-          <button  onClick={handleGoogleLogin} className="btn bg-white text-black border-[#e5e5e5]">
+          <button
+            onClick={handleGoogleLogin}
+            className="btn bg-white text-black border-[#e5e5e5]"
+          >
             <svg
               aria-label="Google logo"
               width="16"
