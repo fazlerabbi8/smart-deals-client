@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const location = useLocation();
@@ -19,11 +20,13 @@ const Login = () => {
     signInUser(email, password)
       .then((result) => {
         console.log(result.user);
+        toast.success("Login successful!");
         setCurrentUser(result.user);
         e.target.reset();
         navigate(location?.state ? location.state : "/");
       })
       .catch((err) => {
+        toast.error("Login Unsuccessfull");
         setError({ ...error, login: err.code });
       });
   };
@@ -47,7 +50,13 @@ const Login = () => {
           body: JSON.stringify(newUser),
         })
           .then((res) => res.json())
-          .then((data) => console.log(data))
+          .then((data) => {
+            if (data.insertedId) {
+              toast.success("Login successful!");
+            } else {
+              toast.error(data.message || "Something went wrong");
+            }
+          })
           .catch((err) => console.log(err));
 
         setCurrentUser(result.user);
