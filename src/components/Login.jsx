@@ -1,13 +1,14 @@
 import { useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
+import auth from "../firebase/firebase.init";
 
 
 const Login = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { setCurrentUser, signInUser } = useContext(AuthContext);
+  const { setCurrentUser, signInUser, googleLogin } = useContext(AuthContext);
 
   const [error, setError] = useState({});
 
@@ -28,6 +29,20 @@ const Login = () => {
         setError({ ...error, login: err.code });
       });
   };
+
+  const handleGoogleLogin = () =>{
+    googleLogin()
+    .then(result => {
+      console.log(result.user);
+      setCurrentUser(result.user)
+      navigate("/");
+    })
+    .catch(err =>{
+      console.log(err.message);
+      setError(err);
+    })
+  }
+
   return (
     <div className="flex justify-center items-center mt-24">
       <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
@@ -61,7 +76,7 @@ const Login = () => {
           </form>
           <h2 className="text-xl font-semibold text-center mt-4 mb-3">OR</h2>
           {/* Google */}
-          <button className="btn bg-white text-black border-[#e5e5e5]">
+          <button onClick={handleGoogleLogin} className="btn bg-white text-black border-[#e5e5e5]">
             <svg
               aria-label="Google logo"
               width="16"
