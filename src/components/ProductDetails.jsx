@@ -316,7 +316,7 @@ const ProductDetails = () => {
 
                 <label className="label">
                   <span className="label-text">
-                    Buyer Image URL
+                    {currentUser?.photoURL || ""}
                   </span>
                 </label>
 
