@@ -292,7 +292,7 @@ const ProductDetails = () => {
                 <div>
                   <label className="label">
                     <span className="label-text">
-                      Buyer Email
+                      Buyer photo
                     </span>
                   </label>
 
@@ -316,13 +316,14 @@ const ProductDetails = () => {
 
                 <label className="label">
                   <span className="label-text">
-                    {currentUser?.photoURL || ""}
+                    Photo
                   </span>
                 </label>
 
                 <input
                   type="url"
                   name="buyerImage"
+                  defaultValue={currentUser?.photoURL || ""}
                   placeholder="https://...your_img_url"
                   className="input input-bordered w-full"
                   required
