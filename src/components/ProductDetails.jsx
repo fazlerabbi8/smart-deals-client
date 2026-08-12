@@ -1,11 +1,12 @@
 import { useContext, useRef } from "react";
 import { useLoaderData, Link } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
+import toast from "react-hot-toast";
 
 const ProductDetails = () => {
   const product = useLoaderData();
   const modalRef = useRef(null);
-  const {currentUser} = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
 
   const {
     title,
@@ -49,6 +50,20 @@ const ProductDetails = () => {
     };
 
     console.log(bidData);
+
+    fetch('http://localhost:5000/bids', {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body:JSON.stringify(bidData)
+    })
+    .then(res => res.json())
+    .then(data =>{
+        if(data){
+            toast.success('Bids added successfully!')
+        }
+    })
 
     handleCloseModal();
   };
@@ -197,7 +212,7 @@ const ProductDetails = () => {
                   type="text"
                   name="buyerName"
                   placeholder="Your name"
-                  defaultValue={currentUser.dispalyName}
+                  defaultValue={currentUser?.displayName || ""}
                   className="input input-bordered w-full"
                   required
                 />
@@ -212,7 +227,7 @@ const ProductDetails = () => {
                   type="email"
                   name="buyerEmail"
                   placeholder="Your Email"
-                  defaultValue={currentUser.email}
+                  defaultValue={currentUser?.email || ""}
                   readOnly
                   className="input input-bordered w-full"
                   required
