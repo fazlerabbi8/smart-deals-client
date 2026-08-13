@@ -70,7 +70,11 @@ const ProductDetails = () => {
   };
 
   useEffect(() => {
-    fetch(`http://localhost:5000/products/bids/${product._id}`)
+    fetch(`http://localhost:5000/products/bids/${product._id}`, {
+      headers:{
+        authorization : `${currentUser.accessToken}`
+      }
+    })
       .then((res) => res.json())
       .then((data) => setBidProduct(data));
   }, [product._id]);

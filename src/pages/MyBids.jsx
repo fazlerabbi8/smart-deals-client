@@ -7,14 +7,37 @@ const MyBids = () => {
   const [bids, setBids] = useState([]);
 
   useEffect(() => {
-    if (currentUser?.email) {
-      fetch(`http://localhost:5000/bids?email=${currentUser.email}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setBids(data);
-        });
-    }
-  }, [currentUser?.email]);
+    const loadBids = async () => {
+      if (!currentUser?.email) return;
+
+      try {
+        const token = await currentUser.getIdToken();
+
+        const res = await fetch(
+          `http://localhost:5000/bids?email=${currentUser.email}`,
+          {
+            headers: {
+              authorization: token,
+            },
+          },
+        );
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || "Failed to load bids");
+        }
+
+        const data = await res.json();
+
+        setBids(data);
+      } catch (error) {
+        console.error("Error loading bids:", error);
+        setBids([]);
+      }
+    };
+
+    loadBids();
+  }, [currentUser]);
 
   const handleDeleteBid = (_id) => {
     Swal.fire({
