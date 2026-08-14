@@ -48,6 +48,18 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) =>{
          setCurrentUser(user)
+         if(user){
+          const loggedUser = {email: user.email};
+          fetch('http://localhost:5000/token', {
+            method: 'POST',
+            headers: {
+              'Content-type':'application/json'
+            },
+            body:JSON.stringify(loggedUser)
+          })
+          .then(res => res.json())
+          .then(data => console.log(data))
+         }
          setLoading(false)
     })
 
