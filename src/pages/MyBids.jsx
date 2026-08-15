@@ -13,7 +13,7 @@ const MyBids = () => {
       try {
         const token = await currentUser.getIdToken();
 
-        const res = await fetch(
+        const res = await fetch(      
           `http://localhost:5000/bids?email=${currentUser.email}`,
           {
             headers: {

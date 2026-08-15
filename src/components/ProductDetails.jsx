@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useLoaderData, Link } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const ProductDetails = () => {
   const product = useLoaderData();
@@ -69,15 +70,27 @@ const ProductDetails = () => {
     handleCloseModal();
   };
 
-  useEffect(() => {
-    fetch(`http://localhost:5000/products/bids/${product._id}`, {
-      headers:{
-        authorization : `${currentUser.accessToken}`
-      }
-    })
-      .then((res) => res.json())
-      .then((data) => setBidProduct(data));
-  }, [product._id]);
+useEffect(() =>{
+  axios.get(`http://localhost:5000/products/bids/${product._id}`)
+  .then(data => {
+    console.log(data)
+    setBidProduct(data.data)
+  })
+})
+
+
+
+  // useEffect(() => {
+  //   fetch(`http://localhost:5000/products/bids/${product._id}`, {
+  //     headers:{
+  //       authorization : `${currentUser.accessToken}`
+  //     }
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => setBidProduct(data));
+  // }, [product._id]);
+
+
 
   return (
     <div>
